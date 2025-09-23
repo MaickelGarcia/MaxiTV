@@ -154,7 +154,7 @@
 
         .slider-container {
             position: relative;
-            max-width: 800px;
+            max-width: 300px;
             margin: 0 auto;
             overflow: hidden;
             border-radius: 20px;
@@ -167,16 +167,20 @@
         }
 
         .slide {
-            min-width: 100%;
-            height: 500px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
-            position: relative;
-        }
+        min-width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #000; /* fondo neutro negro */
+    }
+
+    .slide img {
+        max-height: 600px;   /* ajusta altura máxima */
+        width: auto;         /* mantiene proporción */
+        border-radius: 20px; /* esquinas redondeadas */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
 
         .slide::before {
             content: '';
@@ -407,34 +411,18 @@
             <h2 class="section-title" data-aos="fade-up">Capturas de Pantalla</h2>
             <div class="slider-container" data-aos="fade-up" data-aos-delay="200">
                 <div class="slider" id="slider">
-                    <div class="slide">
-                        <div class="slide-content">
-                            <i class="fas fa-th-large"></i>
-                            <h3>Interfaz Principal</h3>
-                            <p>Lista organizada de canales</p>
-                        </div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-content">
-                            <i class="fas fa-play"></i>
-                            <h3>Reproductor</h3>
-                            <p>Streaming de alta calidad</p>
-                        </div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-content">
-                            <i class="fas fa-list"></i>
-                            <h3>Categorías</h3>
-                            <p>Filtrado por tipo de contenido</p>
-                        </div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-content">
-                            <i class="fas fa-cog"></i>
-                            <h3>Configuración</h3>
-                            <p>Personaliza tu experiencia</p>
-                        </div>
-                    </div>
+            <div class="slide">
+                <img src="assets/images/screenshot1.jpg" alt="Interfaz Principal" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+            </div>
+            <div class="slide">
+                <img src="assets/images/screenshot2.jpg" alt="Reproductor" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+            </div>
+            <div class="slide">
+                <img src="assets/images/screenshot3.jpg" alt="Categorías" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+            </div>
+            <div class="slide">
+                <img src="assets/images/screenshot4.jpg" alt="Configuración" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+            </div>
                 </div>
                 <div class="slider-nav">
                     <button class="active" onclick="goToSlide(0)"></button>
