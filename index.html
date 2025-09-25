@@ -73,6 +73,14 @@
             50% { transform: scale(1.1); }
         }
 
+        .download-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
         .download-btn {
             display: inline-block;
             background: linear-gradient(45deg, #ff6b6b, #ee5a52);
@@ -83,12 +91,53 @@
             border-radius: 50px;
             box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
             transition: all 0.3s ease;
-            margin-top: 1rem;
+            border: none;
+            cursor: pointer;
         }
 
         .download-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Contador de descargas */
+        .download-counter {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-weight: 600;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .download-counter i {
+            color: #4CAF50;
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        .counter-number {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #4CAF50;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         /* Features Section */
@@ -167,20 +216,19 @@
         }
 
         .slide {
-        min-width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #000; /* fondo neutro negro */
-    }
+            min-width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
 
-    .slide img {
-        max-height: 600px;   /* ajusta altura máxima */
-        width: auto;         /* mantiene proporción */
-        border-radius: 20px; /* esquinas redondeadas */
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
-
+        .slide img {
+            max-height: 600px;
+            width: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
 
         .slide::before {
             content: '';
@@ -272,16 +320,6 @@
             color: #3DDC84;
         }
 
-        /* Animations */
-        .float {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
@@ -299,6 +337,15 @@
             .features-grid,
             .tech-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .download-section {
+                flex-direction: column;
+            }
+
+            .download-counter {
+                padding: 12px 20px;
+                font-size: 0.9rem;
             }
         }
 
@@ -348,9 +395,19 @@
             <h1>MaxiTV</h1>
             <p class="subtitle">Streaming de canales en vivo en tu dispositivo Android</p>
             <p>Disfruta de tus canales favoritos donde quieras, cuando quieras</p>
-            <a href="#" class="download-btn" id="downloadBtn">
-                <i class="fab fa-android"></i> Descargar APK
-            </a>
+            
+            <div class="download-section">
+                <button class="download-btn" id="downloadBtn">
+                    <i class="fab fa-android"></i> Descargar APK
+                </button>
+                
+                <div class="download-counter" id="downloadCounter" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-download"></i>
+                    <span>Descargado</span>
+                    <span class="counter-number" id="counterNumber">0</span>
+                    <span>veces</span>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -411,18 +468,18 @@
             <h2 class="section-title" data-aos="fade-up">Capturas de Pantalla</h2>
             <div class="slider-container" data-aos="fade-up" data-aos-delay="200">
                 <div class="slider" id="slider">
-            <div class="slide">
-                <img src="assets/images/screenshot1.jpg" alt="Interfaz Principal" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
-            </div>
-            <div class="slide">
-                <img src="assets/images/screenshot2.jpg" alt="Reproductor" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
-            </div>
-            <div class="slide">
-                <img src="assets/images/screenshot3.jpg" alt="Categorías" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
-            </div>
-            <div class="slide">
-                <img src="assets/images/screenshot4.jpg" alt="Configuración" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
-            </div>
+                    <div class="slide">
+                        <img src="assets/images/screenshot1.jpg" alt="Interfaz Principal" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+                    </div>
+                    <div class="slide">
+                        <img src="assets/images/screenshot2.jpg" alt="Reproductor" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+                    </div>
+                    <div class="slide">
+                        <img src="assets/images/screenshot3.jpg" alt="Categorías" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+                    </div>
+                    <div class="slide">
+                        <img src="assets/images/screenshot4.jpg" alt="Configuración" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+                    </div>
                 </div>
                 <div class="slider-nav">
                     <button class="active" onclick="goToSlide(0)"></button>
@@ -439,22 +496,22 @@
         <div class="container">
             <h2 class="section-title" data-aos="fade-up">Tecnología Android</h2>
             <div class="tech-grid">
-                <div class="tech-item float" data-aos="fade-up" data-aos-delay="100">
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="100">
                     <i class="fab fa-android"></i>
                     <h3>Android Studio</h3>
                     <p>Desarrollado con las mejores prácticas</p>
                 </div>
-                <div class="tech-item float" data-aos="fade-up" data-aos-delay="200">
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="200">
                     <i class="fas fa-code"></i>
                     <h3>Java</h3>
                     <p>Programación nativa robusta</p>
                 </div>
-                <div class="tech-item float" data-aos="fade-up" data-aos-delay="300">
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
                     <i class="fas fa-mobile-alt"></i>
                     <h3>Material Design</h3>
                     <p>Interfaz moderna y intuitiva</p>
                 </div>
-                <div class="tech-item float" data-aos="fade-up" data-aos-delay="400">
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="400">
                     <i class="fas fa-play-circle"></i>
                     <h3>WebView</h3>
                     <p>Streaming optimizado</p>
@@ -498,6 +555,126 @@
             once: true
         });
 
+        // Contador de descargas
+        class DownloadCounter {
+            constructor() {
+                this.apiUrl = 'https://api.countapi.xyz/hit/maxitv-app/downloads';
+                this.getUrl = 'https://api.countapi.xyz/get/maxitv-app/downloads';
+                this.init();
+            }
+
+            async init() {
+                await this.loadCount();
+                this.setupDownloadButton();
+            }
+
+            async loadCount() {
+                try {
+                    const response = await fetch(this.getUrl);
+                    const data = await response.json();
+                    this.updateCounterDisplay(data.value || 0);
+                } catch (error) {
+                    console.error('Error al cargar contador:', error);
+                    this.updateCounterDisplay(0);
+                }
+            }
+
+            async incrementCount() {
+                try {
+                    const response = await fetch(this.apiUrl);
+                    const data = await response.json();
+                    this.updateCounterDisplay(data.value);
+                    this.animateCounter();
+                } catch (error) {
+                    console.error('Error al incrementar contador:', error);
+                    // Incremento local como fallback
+                    const current = parseInt(document.getElementById('counterNumber').textContent);
+                    this.updateCounterDisplay(current + 1);
+                    this.animateCounter();
+                }
+            }
+
+            updateCounterDisplay(count) {
+                const counterElement = document.getElementById('counterNumber');
+                counterElement.textContent = count.toLocaleString();
+            }
+
+            animateCounter() {
+                const counterElement = document.getElementById('counterNumber');
+                const downloadCounter = document.getElementById('downloadCounter');
+                
+                // Animación de pulso
+                counterElement.style.transform = 'scale(1.2)';
+                counterElement.style.color = '#ff6b6b';
+                downloadCounter.style.boxShadow = '0 8px 32px rgba(76, 175, 80, 0.3)';
+                
+                setTimeout(() => {
+                    counterElement.style.transform = 'scale(1)';
+                    counterElement.style.color = '#4CAF50';
+                    downloadCounter.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+                }, 300);
+            }
+
+            setupDownloadButton() {
+                const downloadBtn = document.getElementById('downloadBtn');
+                downloadBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    
+                    // Incrementar contador
+                    await this.incrementCount();
+                    
+                    // Descargar archivo
+                    const link = document.createElement('a');
+                    link.href = './assets/apk/MaxiTV.apk';
+                    link.download = 'MaxiTV.apk';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Mostrar mensaje
+                    this.showDownloadMessage();
+                });
+            }
+
+            showDownloadMessage() {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, #4CAF50, #45a049);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    z-index: 1000;
+                    font-weight: bold;
+                    animation: slideIn 0.5s ease;
+                    max-width: 300px;
+                    text-align: center;
+                `;
+                notification.innerHTML = `
+                    <i class="fas fa-download"></i><br>
+                    ¡Descarga iniciada!<br>
+                    <small>Gracias por descargar MaxiTV</small>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.5s ease';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 500);
+                }, 3000);
+            }
+        }
+
+        // Inicializar contador
+        const downloadCounter = new DownloadCounter();
+
         // Slider functionality
         let currentSlide = 0;
         const slider = document.getElementById('slider');
@@ -536,54 +713,6 @@
         // Create particles periodically
         setInterval(createParticle, 300);
 
-        // Download button - descarga directa del APK
-        document.getElementById('downloadBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Crear elemento de descarga
-            const link = document.createElement('a');
-            link.href = './assets/apk/MaxiTV.apk';  // Ruta relativa al APK
-            link.download = 'MaxiTV.apk'; // Nombre del archivo al descargar
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Mostrar mensaje opcional
-            showDownloadMessage();
-        });
-        
-        function showDownloadMessage() {
-            // Crear notificación de descarga
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(45deg, #4CAF50, #45a049);
-                color: white;
-                padding: 15px 25px;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                z-index: 1000;
-                font-weight: bold;
-                animation: slideIn 0.5s ease;
-            `;
-            notification.innerHTML = `
-                <i class="fas fa-download"></i> 
-                Descargando MaxiTV.apk...
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Remover notificación después de 3 segundos
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.5s ease';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 500);
-            }, 3000);
-        }
-        
         // Agregar estilos para las animaciones de notificación
         const style = document.createElement('style');
         style.textContent = `
