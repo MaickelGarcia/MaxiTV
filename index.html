@@ -555,13 +555,13 @@
             once: true
         });
 
-        // Contador de descargas simple y confiable
+        // Contador de descargas usando archivo JSON del repositorio
         class DownloadCounter {
             constructor() {
-                // Usar un archivo JSON en tu repositorio como base de datos
+                // URL del archivo JSON en tu repositorio
                 this.counterFile = 'https://raw.githubusercontent.com/MaickelGarcia/MaxiTV/main/downloads.json';
-                this.baseCount = 247; // Número inicial
-                this.currentCount = this.baseCount;
+                this.currentCount = 425; // Valor por defecto
+                this.sessionIncrements = 0; // Incrementos en esta sesión
                 this.init();
             }
 
@@ -572,51 +572,47 @@
 
             async loadCount() {
                 try {
-                    // Intentar cargar desde archivo JSON en tu repo
+                    // Cargar desde el archivo JSON con timestamp para evitar cache
                     const response = await fetch(this.counterFile + '?t=' + Date.now());
                     if (response.ok) {
                         const data = await response.json();
-                        this.currentCount = data.downloads || this.baseCount;
+                        this.currentCount = data.downloads || 425;
+                        console.log('Contador cargado desde archivo:', this.currentCount);
                     } else {
-                        // Si no existe el archivo, usar contador simple con fecha
-                        this.currentCount = this.baseCount + this.getDaysSinceStart();
+                        console.log('Archivo no encontrado, usando valor por defecto');
+                        this.currentCount = 425;
                     }
                 } catch (error) {
-                    console.log('Usando contador basado en fecha');
-                    // Fallback: incremento automático basado en días desde el lanzamiento
-                    this.currentCount = this.baseCount + this.getDaysSinceStart();
+                    console.log('Error cargando archivo, usando valor por defecto:', error);
+                    this.currentCount = 425;
                 }
                 
-                this.updateCounterDisplay(this.currentCount);
-            }
-
-            getDaysSinceStart() {
-                // Fecha de lanzamiento de tu app (ajusta esta fecha)
-                const launchDate = new Date('2024-09-01');
-                const today = new Date();
-                const diffTime = Math.abs(today - launchDate);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                // Simular descargas: 2-5 por día aproximadamente
-                return Math.floor(diffDays * (2 + Math.random() * 3));
+                // Agregar incrementos de la sesión actual
+                const totalCount = this.currentCount + this.sessionIncrements;
+                this.updateCounterDisplay(totalCount);
             }
 
             async incrementCount() {
-                this.currentCount++;
-                this.updateCounterDisplay(this.currentCount);
+                this.sessionIncrements++;
+                const totalCount = this.currentCount + this.sessionIncrements;
+                
+                this.updateCounterDisplay(totalCount);
                 this.animateCounter();
                 
-                // Intentar guardar en servicio externo (opcional)
-                this.saveToExternalService();
+                console.log(`Descarga #${totalCount} registrada`);
+                
+                // Intentar notificar al servidor (opcional - para estadísticas)
+                this.logDownload();
             }
 
-            async saveToExternalService() {
+            async logDownload() {
                 try {
-                    // Intentar guardar en servicio externo como backup
-                    fetch(`https://api.countapi.xyz/set/maxitv-counter/downloads?value=${this.currentCount}`)
-                        .catch(() => {}); // Ignorar errores
+                    // Esto es solo para logging, no afecta el contador visible
+                    fetch('https://api.countapi.xyz/hit/maxitv-session/downloads', {
+                        mode: 'no-cors'
+                    }).catch(() => {}); // Ignorar errores
                 } catch (error) {
-                    // Silencioso - no importa si falla
+                    // Silencioso
                 }
             }
 
