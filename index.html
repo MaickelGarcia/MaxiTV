@@ -401,11 +401,9 @@
                     <i class="fab fa-android"></i> Descargar APK
                 </button>
                 
-                <div class="download-counter" id="downloadCounter" data-aos="fade-up" data-aos-delay="300">
+                <div class="download-counter" data-aos="fade-up" data-aos-delay="300">
                     <i class="fas fa-download"></i>
-                    <span>Descargado</span>
-                    <span class="counter-number" id="counterNumber">0</span>
-                    <span>veces</span>
+                    <span>+5000 descargas</span>
                 </div>
             </div>
         </div>
@@ -555,147 +553,56 @@
             once: true
         });
 
-        // Contador de descargas usando archivo JSON del repositorio
-        class DownloadCounter {
-            constructor() {
-                // URL del archivo JSON en tu repositorio
-                this.counterFile = 'https://raw.githubusercontent.com/MaickelGarcia/MaxiTV/main/downloads.json';
-                this.currentCount = 425; // Valor por defecto
-                this.sessionIncrements = 0; // Incrementos en esta sesión
-                this.init();
-            }
+        // Botón de descarga simple
+        document.getElementById('downloadBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Descargar archivo
+            const link = document.createElement('a');
+            link.href = './assets/apk/MaxiTV.apk';
+            link.download = 'MaxiTV.apk';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Mostrar mensaje
+            showDownloadMessage();
+        });
 
-            async init() {
-                await this.loadCount();
-                this.setupDownloadButton();
-            }
-
-            async loadCount() {
-                try {
-                    // Cargar desde el archivo JSON con timestamp para evitar cache
-                    const response = await fetch(this.counterFile + '?t=' + Date.now());
-                    if (response.ok) {
-                        const data = await response.json();
-                        this.currentCount = data.downloads || 425;
-                        console.log('Contador cargado desde archivo:', this.currentCount);
-                    } else {
-                        console.log('Archivo no encontrado, usando valor por defecto');
-                        this.currentCount = 425;
+        function showDownloadMessage() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(45deg, #4CAF50, #45a049);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: bold;
+                animation: slideIn 0.5s ease;
+                max-width: 300px;
+                text-align: center;
+            `;
+            notification.innerHTML = `
+                <i class="fas fa-download"></i><br>
+                ¡Descarga iniciada!<br>
+                <small>Gracias por descargar MaxiTV</small>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
                     }
-                } catch (error) {
-                    console.log('Error cargando archivo, usando valor por defecto:', error);
-                    this.currentCount = 425;
-                }
-                
-                // Agregar incrementos de la sesión actual
-                const totalCount = this.currentCount + this.sessionIncrements;
-                this.updateCounterDisplay(totalCount);
-            }
-
-            async incrementCount() {
-                this.sessionIncrements++;
-                const totalCount = this.currentCount + this.sessionIncrements;
-                
-                this.updateCounterDisplay(totalCount);
-                this.animateCounter();
-                
-                console.log(`Descarga #${totalCount} registrada`);
-                
-                // Intentar notificar al servidor (opcional - para estadísticas)
-                this.logDownload();
-            }
-
-            async logDownload() {
-                try {
-                    // Esto es solo para logging, no afecta el contador visible
-                    fetch('https://api.countapi.xyz/hit/maxitv-session/downloads', {
-                        mode: 'no-cors'
-                    }).catch(() => {}); // Ignorar errores
-                } catch (error) {
-                    // Silencioso
-                }
-            }
-
-            updateCounterDisplay(count) {
-                const counterElement = document.getElementById('counterNumber');
-                counterElement.textContent = count.toLocaleString();
-            }
-
-            animateCounter() {
-                const counterElement = document.getElementById('counterNumber');
-                const downloadCounter = document.getElementById('downloadCounter');
-                
-                // Animación de pulso
-                counterElement.style.transform = 'scale(1.2)';
-                counterElement.style.color = '#ff6b6b';
-                downloadCounter.style.boxShadow = '0 8px 32px rgba(76, 175, 80, 0.3)';
-                
-                setTimeout(() => {
-                    counterElement.style.transform = 'scale(1)';
-                    counterElement.style.color = '#4CAF50';
-                    downloadCounter.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
-                }, 300);
-            }
-
-            setupDownloadButton() {
-                const downloadBtn = document.getElementById('downloadBtn');
-                downloadBtn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    
-                    // Incrementar contador
-                    await this.incrementCount();
-                    
-                    // Descargar archivo
-                    const link = document.createElement('a');
-                    link.href = './assets/apk/MaxiTV.apk';
-                    link.download = 'MaxiTV.apk';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    // Mostrar mensaje
-                    this.showDownloadMessage();
-                });
-            }
-
-            showDownloadMessage() {
-                const notification = document.createElement('div');
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: linear-gradient(45deg, #4CAF50, #45a049);
-                    color: white;
-                    padding: 15px 25px;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                    z-index: 1000;
-                    font-weight: bold;
-                    animation: slideIn 0.5s ease;
-                    max-width: 300px;
-                    text-align: center;
-                `;
-                notification.innerHTML = `
-                    <i class="fas fa-download"></i><br>
-                    ¡Descarga iniciada!<br>
-                    <small>Gracias por descargar MaxiTV</small>
-                `;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.5s ease';
-                    setTimeout(() => {
-                        if (document.body.contains(notification)) {
-                            document.body.removeChild(notification);
-                        }
-                    }, 500);
-                }, 3000);
-            }
+                }, 500);
+            }, 3000);
         }
-
-        // Inicializar contador
-        const downloadCounter = new DownloadCounter();
 
         // Slider functionality
         let currentSlide = 0;
