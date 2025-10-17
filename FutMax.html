@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FutMax - Streaming de Fútbol en Vivo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,128C960,117,1056,75,1152,80C1248,85,1344,139,1392,165.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') bottom/cover no-repeat;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .soccer-icon {
+            font-size: 6rem;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .download-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff1744, #d32f2f);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(255, 23, 68, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 23, 68, 0.4);
+        }
+
+        /* Contador de descargas */
+        .download-counter {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-weight: 600;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .download-counter i {
+            color: #ffd600;
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        .counter-number {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ffd600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-left: 5px solid #ff1744;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #ff1744;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e3c72;
+        }
+
+        /* Screenshots Slider */
+        .screenshots {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .screenshots .section-title {
+            color: white;
+        }
+
+        .slider-container {
+            position: relative;
+            max-width: 300px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .slide {
+            min-width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        .slide img {
+            max-height: 600px;
+            width: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 600px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .slide-content {
+            z-index: 2;
+            text-align: center;
+        }
+
+        .slide-content i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .slider-nav {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .slider-nav button {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .slider-nav button.active {
+            background: white;
+        }
+
+        /* Leagues Section */
+        .leagues {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .leagues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .league-item {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #f0f0f0, #cacaca);
+            box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        .league-item:hover {
+            transform: scale(1.05);
+        }
+
+        .league-item i {
+            font-size: 3rem;
+            color: #ff1744;
+            margin-bottom: 1rem;
+        }
+
+        .league-item h3 {
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e3c72;
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #ffd600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .features-grid,
+            .leagues-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .download-section {
+                flex-direction: column;
+            }
+
+            .download-counter {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Particles background */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float-particles 6s infinite linear;
+        }
+
+        @keyframes float-particles {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="particles" id="particles"></div>
+        <div class="hero-content" data-aos="fade-up">
+            <div class="soccer-icon">
+                <i class="fas fa-futbol"></i>
+            </div>
+            <h1>FutMax</h1>
+            <p class="subtitle">Streaming de fútbol en vivo en tu dispositivo Android</p>
+            <p>Disfruta de los mejores partidos donde quieras, cuando quieras</p>
+            
+            <div class="download-section">
+                <button class="download-btn" id="downloadBtn">
+                    <i class="fab fa-android"></i> Descargar APK
+                </button>
+                
+                <div class="download-counter" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-download"></i>
+                    <span>+12000 descargas</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Características</h2>
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <h3 class="feature-title">Partidos en Vivo</h3>
+                    <p>Accede a los mejores partidos de fútbol en tiempo real con calidad HD</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="feature-title">Ligas Internacionales</h3>
+                    <p>Síguelas principales ligas del mundo desde tu dispositivo Android</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="feature-title">Notificaciones de Partidos</h3>
+                    <p>Recibe alertas en tiempo real de tus equipos favoritos</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                    <h3 class="feature-title">Pantalla Completa</h3>
+                    <p>Experiencia inmersiva con el mejor modo de visualización</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="feature-title">Equipos Favoritos</h3>
+                    <p>Guarda tus equipos favoritos para un acceso rápido</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Rápido y Estable</h3>
+                    <p>Streaming de baja latencia sin interrupciones</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leagues Section -->
+    <section class="leagues">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Ligas Disponibles</h2>
+            <div class="leagues-grid">
+                <div class="league-item" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-trophy"></i>
+                    <h3>La Liga</h3>
+                    <p>España - Fútbol de élite</p>
+                </div>
+                <div class="league-item" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Premier League</h3>
+                    <p>Inglaterra - Top europeo</p>
+                </div>
+                <div class="league-item" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Serie A</h3>
+                    <p>Italia - Clásico europeo</p>
+                </div>
+                <div class="league-item" data-aos="fade-up" data-aos-delay="400">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Ligue 1</h3>
+                    <p>Francia - Pasión francesa</p>
+                </div>
+                <div class="league-item" data-aos="fade-up" data-aos-delay="500">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Bundesliga</h3>
+                    <p>Alemania - Potencia germana</p>
+                </div>
+                <div class="league-item" data-aos="fade-up" data-aos-delay="600">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Copa Libertadores</h3>
+                    <p>Sudamérica - La pasión suramericana</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>FutMax</h3>
+                    <p>La mejor aplicación de streaming de fútbol para Android</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Características</h3>
+                    <p>Partidos en vivo</p>
+                    <p>Múltiples ligas</p>
+                    <p>Notificaciones en tiempo real</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Soporte</h3>
+                    <p>Android 6.0+</p>
+                    <p>Instalación APK</p>
+                    <p>Actualizaciones regulares</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #2a5298; padding-top: 2rem; margin-top: 2rem;">
+                <p>&copy; 2024 FutMax. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Botón de descarga simple
+        document.getElementById('downloadBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Descargar archivo
+            const link = document.createElement('a');
+            link.href = './assets/apk/FutMax.apk';
+            link.download = 'FutMax.apk';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Mostrar mensaje
+            showDownloadMessage();
+        });
+
+        function showDownloadMessage() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(45deg, #ff1744, #d32f2f);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: bold;
+                animation: slideIn 0.5s ease;
+                max-width: 300px;
+                text-align: center;
+            `;
+            notification.innerHTML = `
+                <i class="fas fa-download"></i><br>
+                ¡Descarga iniciada!<br>
+                <small>Gracias por descargar FutMax</small>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        // Slider functionality
+        let currentSlide = 0;
+        const slider = document.getElementById('slider');
+        const slides = document.querySelectorAll('.slide');
+        const navButtons = document.querySelectorAll('.slider-nav button');
+
+        function goToSlide(index) {
+            currentSlide = index;
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            navButtons.forEach((btn, i) => {
+                btn.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        // Auto slide
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            goToSlide(currentSlide);
+        }, 4000);
+
+        // Particles animation
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.width = particle.style.height = Math.random() * 10 + 5 + 'px';
+            particle.style.animationDuration = Math.random() * 3 + 3 + 's';
+            document.getElementById('particles').appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 300);
+
+        // Agregar estilos para las animaciones de notificación
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
